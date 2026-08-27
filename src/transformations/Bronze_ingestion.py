@@ -31,10 +31,7 @@ def customer_bronze_snapshot_bundle():
     "valid_product_id",
     "product_id IS NOT NULL"
 )
-@dp.expect_or_drop(
-    "valid_price",
-    "price > 0"
-)
+
 def product_bronze_snapshot_bundle():
     return(
         spark.read.format("csv")

@@ -12,7 +12,7 @@ schema_silver = f"silver_{schema}"
 )
 def gold_dim_customer_bundle():
     return (spark.read.table(f"{catalog}.{schema}.{schema_silver}_customer")
-  
+      .filter("__END_AT IS NULL")
     )
 
 @dp.materialized_view(

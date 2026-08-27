@@ -1,0 +1,18 @@
+resources:
+  pipelines:
+    ingestion_raw_bronze:
+      name: Ingestion_raw_Bronze_${var.environment}
+      libraries:
+        - glob:
+            include: ../src/transformations/**
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      configuration:
+        catalog_name: ${var.catalog}
+        schema_name: ${var.schema}
+        environment: ${var.environment}
+      channel: CURRENT
+      continuous: false
+      photon: false
+      root_path: ../src
+      serverless: true

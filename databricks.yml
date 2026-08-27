@@ -1,0 +1,63 @@
+# This is a Declarative Automation Bundle definition for Retail_Sales_Bundle.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: Retail_Sales_Bundle
+  uuid: a6217d72-e9ce-4ca0-855e-de8da3bf1b2b
+
+include:
+  - resources/*.yml
+
+
+# Variable declarations. These variables are assigned in the dev/prod targets below.
+variables:
+  catalog:
+    description: The catalog to use
+  schema:
+    description: The schema to use
+  environment:
+    description: Environment Name
+
+targets:
+  dev:
+    # The default target uses 'mode: development' to create a development copy.
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default.
+    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405616212888295.15.azuredatabricks.net
+    variables:
+      catalog: retail_sales_project
+     # schema: ${workspace.current_user.short_name}
+      schema: dev
+      environment: dev
+    presets:
+      artifacts_dynamic_version: true
+
+  qa:
+    mode: production
+
+    workspace:
+      host: https://adb-7405616212888295.15.azuredatabricks.net
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: retail_sales_project
+      schema: qa
+      environment: qa
+    presets:
+      artifacts_dynamic_version: true
+
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405616212888295.15.azuredatabricks.net
+      # We explicitly deploy to /Workspace/Users/amit.amit@bd.com to make sure we only have a single copy.
+      root_path: /Workspace/Users/amit.amit@bd.com/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: retail_sales_project
+      schema: prod
+      environment: prod
+    permissions:
+      - user_name: amit.amit@bd.com
+        level: CAN_MANAGE
